@@ -1,40 +1,58 @@
 const express = require("express");
 const router = express.Router();
-const multer = require('multer')
+const multer = require("multer");
 
 const imageService = require("../services/imageService");
 
 //set up storage to store images
 const Storage = multer.diskStorage({
-    destination: 'uploads',
-    filename: (req,file,cb) => {
-        cb(null, file.originalname);
-    }
-})
+  destination: "public/uploads",
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
 
-const upload =  multer({
-    storage:Storage
-}).single('uploadImage')
+const upload = multer({
+  storage: Storage,
+}).single("uploadImage");
 
 router.post("/uploadImage", async (req, res) => {
   try {
-      let result
-    upload(req, res, (err) => {
+    var result 
+
+    await upload(req, res, async (err) => {
       if (err) {
         console.log(err);
       } else {
-        result = imageService.saveImage(
-          req.body.imageName,
-          req.file.filename
+        result = await imageService.saveImage(
+          req.file.filename,
         );
+        res.statusCode = 200;
+        console.log(result);
+        res.json(result);
       }
     });
-    res.statusCode = 200;
-    res.json(result);
   } catch (err) {
     res.statusCode = 500;
     res.json({ success: false, Error: err });
   }
 });
+
+router.get("/getImages", async (req,res) => {
+  try{
+    let images = await imageService.getImages()
+    if(images.success) {
+      res.statusCode = 200
+      res.json(images.images.records)
+    }
+    else{
+      throw new Error(images)
+    }
+  }
+  catch(err) {
+    res.statusCode = 500
+    res.json(err)
+  }
+})
 
 module.exports = router;
