@@ -1,9 +1,10 @@
 const studentModel = require("../models/studentModel");
 
-exports.addStudent = async (studentDetails) => {
+exports.addStudent = async (studentDetails,password) => {
   try {
     let newStudent = new studentModel(studentDetails);
-    const savedStudent = await newStudent.save();
+    let savedStudent = await studentModel.register(newStudent,password)
+    //const savedStudent = await newStudent.save();
     return { success: true, student: savedStudent };
   } catch (err) {
     console.log(err);
@@ -31,6 +32,13 @@ exports.getStudentById = async (studentId) => {
 
 exports.updateStudent = async (studentId, studentDetails) => {
   try {
+    // this must be done when passport-local-mongoose is used
+    if (studentDetails.password) {
+      let student = await studentModel.findById(studentId);
+      await student.setPassword(studentDetails.password, () => {
+        student.save();
+      });
+    }
     let updatedStudent = await studentModel.findByIdAndUpdate(
       studentId,
       {$set: studentDetails},

@@ -10,9 +10,9 @@ exports.addStudent = async (studentDetails, imageId) => {
       dob: studentDetails.dob,
       email: studentDetails.email,
       gender: studentDetails.gender,
-      studentNumber: studentDetails.studentNumber,
+      username: studentDetails.studentNumber,
       image: imageId,
-    });
+    },studentDetails.password);
     return { success: true, student: savedStudent };
   } catch (err) {
     console.log(err);

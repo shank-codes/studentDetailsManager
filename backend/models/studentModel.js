@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const studentSchema = mongoose.Schema({
     name :{
@@ -19,16 +20,20 @@ const studentSchema = mongoose.Schema({
         enum : ['male','female','other'], 
         default: 'other' 
     },
-    studentNumber : {
-        type : String, 
-        required : true
-    },
+    // studentNumber : {
+    //     type : String, 
+    //     required : true
+    // },
     image : {
         type : mongoose.Schema.Types.ObjectId,
         ref: "image"
+    },
+    isAdmin : {
+        type: Boolean,
+        default: false
     }
 })
 
-
+studentSchema.plugin(passportLocalMongoose)
 
 module.exports = ImageModel = mongoose.model('student',studentSchema)

@@ -3,6 +3,7 @@ require('dotenv').config();
 const { application } = require('express');
 const express = require('express')
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser')
 
 const imageRouter = require('./controllers/imageController')
 const studentRouter = require('./controllers/studentController')
@@ -12,6 +13,7 @@ const app = express();
 //middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}));
+app.use(cookieParser())
 
 mongoose.connect(process.env.DATABASE, {}).then(
     () => { 
