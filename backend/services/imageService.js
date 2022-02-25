@@ -1,4 +1,5 @@
 const imageDAO = require('../DAO/imageDAO')
+const fs = require('fs')
 
 exports.saveImage = async (imageName)=> {
     try {
@@ -30,9 +31,37 @@ exports.getImages = async () => {
 
 exports.deleteImage = async(imageId) => {
     try{
-        let image = await imageDAO.deleteImage(imageId)
+        let deletedImage = await imageDAO.deleteImage(imageId)
+
+        fs.unlink(
+            "public/uploads/" + deletedImage.image.imageName,
+            (err, files) => {
+              if (err) throw err;
+            }
+          );
+
         console.log('image deleted successfully')
-        return {success:true, image:image.image}
+        return {success:true, image:deletedImage.image}
+    }
+    catch(err) {
+        return {success: false, Error:err}
+    }
+}
+
+exports.updateImage = async(imageId, imageName) => {
+    try {
+        let image = await imageDAO.updateImage(imageId,imageName)
+        return {success:true, updatedImage: image.updatedImage}
+    }
+    catch(err) {
+        return {success:false, Error: err}
+    }
+}
+
+exports.getImageById = async (imageId) => {
+    try{
+        let imageData = await imageDAO.getImageById(imageId)
+        return {success:true, image:imageData.image}
     }
     catch(err) {
         return {success: false, Error:err}

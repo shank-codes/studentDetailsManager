@@ -33,7 +33,8 @@ exports.updateStudent = async (studentId, studentDetails) => {
   try {
     let updatedStudent = await studentModel.findByIdAndUpdate(
       studentId,
-      studentDetails
+      {$set: studentDetails},
+      {new : true}
     );
     return { success: true, student: updatedStudent };
   } catch (err) {
