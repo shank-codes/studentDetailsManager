@@ -1,0 +1,57 @@
+{{!-- <h1>welcome {{user.name}}</h1>
+{{#if user.isAdmin }}
+<p>welcome admin</p>
+{{else}}
+<p>welcome student</p>
+{{/if}} --}}
+
+{{>navbar}}
+
+<div class="container">
+    <div class="card mb-3 mt-5 mx-auto shadow" style="max-width: 1000px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="/uploads/{{imageName}}" 
+                    alt="product image" class="img-fluid rounded-start">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold font-poppins">{{ user.name }}</h5>
+                    <p class="card-text">{{user.dob}}</p>
+                    <table class="table table-borderless col-md-6 mb-0">
+                        <tbody>
+                            <tr>
+                                <th>Gender</th>
+                                <td>{{ user.gender }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ user.email}}</td>
+                            </tr>
+                            <tr>
+                                <th>Student Number</th>
+                                <td>{{ user.studentNumber }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {{#if user.isAdmin}}
+        <div class="col-md-6">
+            <a class="btn btn-primary" href="addStudent">Add New Student</a>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-primary" href="viewStudents">Admin view</a>
+        </div>
+        {{else}}
+        <div class="col-md-6">
+            <a class="btn btn-primary" href="view">View</a>
+        </div>
+        {{/if}}
+        
+
+    </div>
+</div>

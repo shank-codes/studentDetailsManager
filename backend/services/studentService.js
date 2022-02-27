@@ -5,6 +5,7 @@ const imageService = require("../services/imageService");
 
 exports.addStudent = async (studentDetails, imageId) => {
   try {
+
     let savedStudent = await studentDAO.addStudent({
       name: studentDetails.name,
       dob: studentDetails.dob,

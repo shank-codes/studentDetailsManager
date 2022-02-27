@@ -7,7 +7,7 @@ const studentSchema = mongoose.Schema({
         required: true
     },
     dob: {
-        type: Date,
+        type: String,
         required: true,
         //todo : set max date limit
     },
@@ -17,8 +17,8 @@ const studentSchema = mongoose.Schema({
     },
     gender : {
         type: String,
-        enum : ['male','female','other'], 
-        default: 'other' 
+        enum : ['Male','Female','Other'], 
+        default: 'Other' 
     },
     // studentNumber : {
     //     type : String, 
