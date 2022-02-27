@@ -1,0 +1,19 @@
+{{>navbar}}
+
+<script>
+    var decodeJson = decodeURIComponent("{{{users}}}");
+    var jsonObj = JSON.parse(decodeJson);
+
+    var tables = [];
+    var config = {
+        view:"datatable", 
+        data:webix.copy(jsonObj), 
+        autoConfig:true 
+    };
+    tables.push(config)
+    
+    webix.ui({
+        rows:tables
+    });
+    
+</script>

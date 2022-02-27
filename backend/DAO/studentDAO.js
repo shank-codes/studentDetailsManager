@@ -12,9 +12,9 @@ exports.addStudent = async (studentDetails,password) => {
   }
 };
 
-exports.getStudents = async () => {
+exports.getStudents = async (filter) => {
   try {
-    let students = await studentModel.find();
+    let students = await studentModel.find(filter).populate('image');
     return { success: true, students: students };
   } catch (err) {
     return { success: false, Error: err };
@@ -23,7 +23,7 @@ exports.getStudents = async () => {
 
 exports.getStudentById = async (studentId) => {
   try {
-    let student = await studentModel.findById(studentId);
+    let student = await studentModel.findById(studentId).populate('image');
     return { success: true, student: student };
   } catch (err) {
     return { success: false, Error: err };

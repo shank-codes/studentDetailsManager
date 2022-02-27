@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const handlebars = require("express-handlebars");
 const path = require('path')
 const cors = require('cors')
+const methodOverride = require('method-override')
 
 
 const imageRouter = require("./controllers/imageController");
@@ -19,6 +20,7 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(methodOverride('_method'))
 
 const hbs = handlebars.create({
   layoutsDir: `${__dirname}/views/layouts`,
@@ -32,7 +34,6 @@ app.set("view engine", "hbs");
 app.engine("hbs", hbs.engine);
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/webix', express.static(__dirname + '/node_modules/webix/'));
 
 mongoose.connect(process.env.DATABASE, {}).then(
   () => {

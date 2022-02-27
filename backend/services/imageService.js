@@ -5,7 +5,7 @@ exports.saveImage = async (imageName)=> {
     try {
         const savedImage = await imageDAO.saveImage(imageName)
         if(savedImage.success){
-            return {success:true, images: savedImage}
+            return {success:true, image: savedImage.image}
         }
         else 
         throw new Error("error in service")

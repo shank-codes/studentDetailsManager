@@ -68,12 +68,35 @@ router.get("/getStudents", async (req, res) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ success: false, Error: err });
       } else if (user) {
-        console.log(1);
-        let students = await studentService.getStudents();
-        console.log(students);
-        res.status = 200;
-        res.setHeader("Contetn-Type", "application/json");
-        res.json(students);
+        let result = await studentService.getStudents(req.query);
+        if (result.success) {
+          let studentData = result.students.map((obj) => {
+            return {
+              id: obj._id,
+              name: obj.name,
+              dob: obj.dob,
+              imageName: obj.image.imageName,
+              gender: obj.gender,
+              email: obj.email,
+              studentNumber: obj.username,
+            };
+          });
+          if (user.isAdmin) {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "text/html");
+            res.render("adminViewStudents", {
+              users: studentData,
+              enableSearch: true,
+            });
+          } else {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "text/html");
+            res.render("viewStudents", {
+              enableSearch: true,
+              users: encodeURIComponent(JSON.stringify(studentData)),
+            });
+          }
+        }
       } else if (info) {
         res.statusCode = 403;
         res.setHeader("Content-Type", "application/json");
@@ -97,84 +120,130 @@ router.get("/getStudentById", async (req, res) => {
   }
 });
 
-router.put("/updateStudent", async (req, res) => {
-  try {
-    req.headers["authorization"] = "Bearer " + req.cookies.token;
-    passport.authenticate("jwt", async (err, user, info) => {
-      console.log("getSTudents inside passport . authenticate");
-      if (err) {
-        res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: false, Error: err });
-      } else if (user) {
-        if (user.isAdmin) {
-          req.ui = uuidv1();
-          await upload(req, res, async (err) => {
-            if (err) {
-              console.log(err);
-            } else {
-              if (req.file != undefined) {
-                console.log(req.file);
+router
+  .route("/updateStudent")
+  .get(async (req, res) => {
+    try {
+      req.headers["authorization"] = "Bearer " + req.cookies.token;
+      passport.authenticate("jwt", async (err, user, info) => {
+        console.log("getSTudents inside passport . authenticate");
+        if (err) {
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ success: false, Error: err });
+        } else if (user) {
+          if (user.isAdmin) {
+            let result = await studentService.getStudentById(req.query.id)
+            let studentDetails = {
+              id: result.student._id,
+              name: result.student.name,
+              dob: result.student.dob,
+              email: result.student.email,
+              gender: result.student.gender,
+              imageName: result.student.image.imageName,
+              studentNumber: result.student.username,
+            }
+            res.render('edit',{user:studentDetails})
+          } else {
+            res.send("you are not an admin");
+          }
+        } else if (info) {
+          res.statusCode = 403;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ success: false, Error: info });
+        }
+      })(req, res);
+    } catch (err) {
+      // else {
+      //   console.log("reached here else");
+      //   console.log(req.file);
+      //   console.log(req.query.id, req.body);
+      //   let student = await studentService.updateStudent(req.query.id, req.body);
+      //   res.status = 200;
+      //   res.json(student);
+      // }
+      res.status = 500;
+      res.json(err);
+    }
+  })
+  .put(async (req, res) => {
+    try {
+      req.headers["authorization"] = "Bearer " + req.cookies.token;
+      passport.authenticate("jwt", async (err, user, info) => {
+        console.log("getSTudents inside passport . authenticate");
+        if (err) {
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ success: false, Error: err });
+        } else if (user) {
+          if (user.isAdmin) {
+            req.ui = uuidv1();
+            await upload(req, res, async (err) => {
+              if (err) {
+                console.log(err);
+              } else {
+                if (req.file != undefined) {
+                  console.log(req.file);
 
-                let studentInfo = await studentService.getStudentById(
-                  req.query.id
-                );
-                let deletedImage = await imageService.deleteImage(
-                  studentInfo.student.image
-                );
-
-                console.log(`deletedImage:${deletedImage}`);
-
-                let imageSaveResult = await imageService.saveImage(
-                  req.file.filename
-                );
-                if (!imageSaveResult.success)
-                  throw new Error("cannot add image");
-
-                let studentUpdateResult =
-                  await studentService.updateStudentAndImage(
-                    req.query.id,
-                    req.body,
-                    imageSaveResult.images._id
+                  let studentInfo = await studentService.getStudentById(
+                    req.query.id
+                  );
+                  let deletedImage = await imageService.deleteImage(
+                    studentInfo.student.image
                   );
 
-                if (!studentUpdateResult.success)
-                  throw new Error("cannot add student");
+                  console.log(`deletedImage:${deletedImage}`);
 
-                res.statusCode = 200;
-                res.json(studentUpdateResult);
-              } else {
-                let student = await studentService.updateStudent(
-                  req.query.id,
-                  req.body
-                );
-                res.status = 200;
-                res.json(student);
+                  let imageSaveResult = await imageService.saveImage(
+                    req.file.filename
+                  );
+                  if (!imageSaveResult.success)
+                    throw new Error("cannot add image");
+
+                  let studentUpdateResult =
+                    await studentService.updateStudentAndImage(
+                      req.query.id,
+                      req.body,
+                      imageSaveResult.image._id
+                    );
+
+                  if (!studentUpdateResult.success)
+                    throw new Error("cannot add student");
+
+                  res.statusCode = 200;
+                  res.redirect('getStudents');
+                } else {
+                  let student = await studentService.updateStudent(
+                    req.query.id,
+                    req.body
+                  );
+                  res.status = 200;
+                  res.redirect('getStudents');
+                }
               }
-            }
-          });
-        } else {
-          res.send("you are not an admin");
+            });
+          } else {
+            res.send("you are not an admin");
+          }
+        } else if (info) {
+          res.statusCode = 403;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ success: false, Error: info });
         }
-      } else if (info) {
-        res.statusCode = 403;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: false, Error: info });
-      }
-    })(req, res);
-  } catch (err) {
-    // else {
-    //   console.log("reached here else");
-    //   console.log(req.file);
-    //   console.log(req.query.id, req.body);
-    //   let student = await studentService.updateStudent(req.query.id, req.body);
-    //   res.status = 200;
-    //   res.json(student);
-    // }
-    res.status = 500;
-    res.json(err);
-  }
-});
+      })(req, res);
+    } catch (err) {
+      // else {
+      //   console.log("reached here else");
+      //   console.log(req.file);
+      //   console.log(req.query.id, req.body);
+      //   let student = await studentService.updateStudent(req.query.id, req.body);
+      //   res.status = 200;
+      //   res.json(student);
+      // }
+      res.status = 500;
+      res.json(err);
+    }
+  });
 
 router.delete("/deleteStudent", async (req, res) => {
   try {
@@ -189,7 +258,7 @@ router.delete("/deleteStudent", async (req, res) => {
         if (user.isAdmin) {
           let student = await studentService.deleteStudent(req.query.id);
           res.status = 200;
-          res.json(student);
+          res.redirect("getStudents");
         } else {
           res.send("you are not an admin");
         }
@@ -280,7 +349,6 @@ router.get("/logout", (req, res, next) => {
 router
   .route("/addStudent")
   .get(async (req, res) => {
-
     req.headers["authorization"] = "Bearer " + req.cookies.token;
     passport.authenticate("jwt", async (err, user, info) => {
       console.log("getSTudents inside passport . authenticate");
@@ -290,7 +358,7 @@ router
         res.json({ success: false, Error: err });
       } else if (user) {
         if (user.isAdmin) {
-          res.render("signUp", { msg: "Add Student details here"});
+          res.render("signUp", { msg: "Add Student details here" });
         } else {
           res.send("you are not an admin");
         }
@@ -300,11 +368,10 @@ router
         res.json({ success: false, Error: info });
       }
     })(req, res);
-    
   })
   .post(async (req, res) => {
-    console.log(req)
-    console.log('iam here')
+    console.log(req);
+    console.log("iam here");
     req.headers["authorization"] = "Bearer " + req.cookies.token;
     passport.authenticate("jwt", async (err, user, info) => {
       console.log("getSTudents inside passport . authenticate");
@@ -314,7 +381,7 @@ router
         res.json({ success: false, Error: err });
       } else if (user) {
         if (user.isAdmin) {
-          console.log(req)
+          console.log(req);
           req.ui = uuidv1();
           await upload(req, res, async (err) => {
             if (err) {
@@ -328,7 +395,7 @@ router
 
               let studentSaveResult = await studentService.addStudent(
                 req.body,
-                imageSaveResult.images.image._id
+                imageSaveResult.image._id
               );
 
               if (!studentSaveResult.success)
@@ -336,7 +403,7 @@ router
               passport.authenticate("local")(req, res, () => {
                 res.statusCode = 200;
                 res.setHeader("Content-type", "text/html");
-                res.json(studentSaveResult);
+                res.redirect('getStudents');
               });
             }
           });
@@ -362,20 +429,23 @@ router.get("/dashboard", async (req, res) => {
         res.json({ success: false, Error: err });
       } else if (user) {
         let userDetails = {
-          name : user.name,
+          name: user.name,
           dob: user.dob,
           email: user.email,
           studentNumber: user.username,
-          gender: user.gender
-        }
-        if(user.isAdmin){
-          console.log('reached here ewewrefwe')
-          userDetails.isAdmin =  true
+          gender: user.gender,
+        };
+        if (user.isAdmin) {
+          console.log("reached here ewewrefwe");
+          userDetails.isAdmin = true;
         }
 
-        let image = await imageService.getImageById(user.image)
-        console.log(image.image.imageName)
-        res.render("dashboard",{user:userDetails,imageName: image.image.imageName});
+        let image = await imageService.getImageById(user.image);
+        console.log(image.image.imageName);
+        res.render("dashboard", {
+          user: userDetails,
+          imageName: image.image.imageName,
+        });
       } else if (info) {
         res.statusCode = 403;
         res.setHeader("Content-Type", "application/json");

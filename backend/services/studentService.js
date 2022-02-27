@@ -20,9 +20,13 @@ exports.addStudent = async (studentDetails, imageId) => {
     return { success: false, Error: err };
   }
 };
-exports.getStudents = async () => {
+exports.getStudents = async (searchQuery) => {
   try {
-    let students = await studentDAO.getStudents();
+    let filter = {}
+    if (typeof searchQuery.search != "undefined") {
+      filter["name"] = new RegExp("^" + searchQuery.search, "i");
+    }
+    let students = await studentDAO.getStudents(filter);
     return { success: true, students: students.students };
   } catch (err) {
     return { success: false, Error: err };

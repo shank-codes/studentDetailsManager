@@ -1,0 +1,37 @@
+{{>navbar}}
+
+<div class="container">
+    <div class="card-group row row-cols-1 row-cols-md-3 g-4 mx-auto">
+        {{#each users}}
+        <div class="col">
+            <div class="card m-2" style="width: 20rem;">
+                <img src="/uploads/{{this.imageName}}" class="card-img-top allP-img" alt="student image">
+                <div class="card-body text-truncate">
+                    <h5 class="card-title fw-bold text-capitalize text-truncate">{{this.name}}</h5>
+                    <p class="card-text">DOB: {{this.dob}}</p>
+                </div>
+                <table class="table table-borderless col-md-10 table-margin text-truncate">
+                    <tbody>
+                        <tr>
+                            <th>Gender :</th>
+                            <td>{{ this.gender }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email :</th>
+                            <td>{{this.email}}</td>
+                        </tr>
+                        <tr>
+                            <th>Student Number:</th>
+                            <th>{{ this.studentNumber }}</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="card text-center">
+                    <a href="/student/updateStudent?id={{this.id}}" class="btn btn-primary">Edit</a>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        <hr>
+    </div>
+</div>
