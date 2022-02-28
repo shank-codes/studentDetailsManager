@@ -3,6 +3,34 @@ const fs = require("fs");
 const studentDAO = require("../DAO/studentDAO");
 const imageService = require("../services/imageService");
 
+
+/**
+ * @module Students API
+ */
+
+/**
+ * <hr>
+ * @typedef studentDetails - Incoming student details from request embeded in a  object.
+ * @type {object}
+ * @property {object} id - The id of the incoming/result student object.
+ * @property {string} name - The name of the incoming/result student object.
+ * @property {string} dob - The date of birth of the incoming/result student object.
+ * @property {string} studentNumber - The studentNumber of the incoming/result student object.
+ * @property {string} gender - The gender of the incoming/result student object.
+ * @property {object} image - The image of the incoming/result student object.
+ * @property {string} email - The email of the incoming/result student object.
+ */
+
+
+/**
+ * <hr>
+ * Add student details
+ * @param {studentDetails}  studentDetails - Student details from the request embeded in a object
+ * @param {object} imageId - Id of the image after saving to the database
+ * @returns {object}  - result after saving student details to the database
+ * <hr>
+ */
+
 exports.addStudent = async (studentDetails, imageId) => {
   try {
 
@@ -20,6 +48,14 @@ exports.addStudent = async (studentDetails, imageId) => {
     return { success: false, Error: err };
   }
 };
+
+/**
+ * <hr>
+ * View student details
+ * @param {object}  searchQuery - Filters that need to be applied while retrieving the students
+ * @returns {object}  - result after fetching students from the 
+ * <hr>
+ */
 exports.getStudents = async (searchQuery) => {
   try {
     let filter = {}
@@ -33,6 +69,14 @@ exports.getStudents = async (searchQuery) => {
   }
 };
 
+/**
+ * <hr>
+ * Fetch student details
+ * @param {object}  studentId - Id of the student that need to be fetched
+ * @returns {object}  - result after fetching the student
+ * <hr>
+ */
+
 exports.getStudentById = async (studentId) => {
   try {
     let student = await studentDAO.getStudentById(studentId);
@@ -41,6 +85,16 @@ exports.getStudentById = async (studentId) => {
     return { success: false, Error: err };
   }
 };
+
+/**
+ * <hr>
+ * Update student details
+ * @param {object} studentId - Id of the student whose details need to be updated
+ * @param {studentDetails}  studentDetails - Student details from the request embeded in a object
+ * @param {object} imageId - Id of the image after saving to the database
+ * @returns {object}  - result after saving student details to the database
+ * <hr>
+ */
 
 exports.updateStudentAndImage = async (studentId, studentDetails,imageId) => {
   try {
@@ -60,6 +114,14 @@ exports.updateStudentAndImage = async (studentId, studentDetails,imageId) => {
     return { success: false, Error: err };
   }
 };
+
+/**
+ * <hr>
+ * Delete student details
+ * @param {object}  studentId - Id of the student that need to be deleted
+ * @returns {object}  - result after deleting the student
+ * <hr>
+ */
 
 exports.deleteStudent = async (studentId) => {
   try {
@@ -82,6 +144,15 @@ exports.deleteStudent = async (studentId) => {
     return { success: false, Error: err };
   }
 };
+
+/**
+ * <hr>
+ * Update student details without image
+ * @param {object} studentId - Id of the student whose details need to be updated
+ * @param {studentDetails}  studentDetails - Student details from the request embeded in a object
+ * @returns {object}  - result after updating student details to the database
+ * <hr>
+ */
 
 exports.updateStudent = async (studentId, studentDetails) => {
   try {
