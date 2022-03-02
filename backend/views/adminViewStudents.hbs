@@ -1,6 +1,50 @@
 {{>navbar}}
 
-<div class="container">
+{{!-- id: obj._id,
+name: obj.name,
+dob: obj.dob,
+imageName: obj.image.imageName,
+gender: obj.gender,
+email: obj.email,
+studentNumber: obj.username, --}}
+<script>
+    var decodeJson = decodeURIComponent("{{{result}}}");
+    console.log(decodeJson)
+    var jsonObj = JSON.parse(decodeJson);
+    var studentData = jsonObj.users.map(obj => {
+        return ({
+            Image:  `<img src='/uploads/${obj.imageName}' style='width:30px'>`,
+            id: obj.id,
+            name: obj.name,
+            dob: obj.dob,
+            gender: obj.gender,
+            email: obj.email,
+            studentNumber: obj.studentNumber
+            //Edit: `<a href='localhost:3000/student/updateStudent?id=${obj.id}'>Edit</a>`,
+        })
+    })
+
+    var tables = [];
+    var config = {
+        view: "datatable",
+        data: webix.copy(studentData),
+        select: true,
+        autoConfig: true,
+        on:{
+            onItemClick(item){
+                console.log(item.row)
+                window.location.href = `http://localhost:3000/student/updateStudent?id=${item.row}`;
+            }
+        }
+    };
+    tables.push(config)
+
+    webix.ui({
+        rows: tables
+    });
+</script>
+
+{{!-- <div class="container">
     <div class="card-group row row-cols-1 row-cols-md-3 g-4 mx-auto">
         {{#each users}}
         <div class="col">
@@ -34,4 +78,4 @@
         {{/each}}
         <hr>
     </div>
-</div>
+</div> --}}

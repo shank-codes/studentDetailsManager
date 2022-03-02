@@ -1,6 +1,88 @@
 {{>navbar}}
+{{!-- 
+id: result.student._id,
+name: result.student.name,
+dob: result.student.dob,
+email: result.student.email,
+gender: result.student.gender,
+imageName: result.student.image.imageName,
+studentNumber: result.student.username, --}}
+<script>
 
-<div class="container w-75 mt-5">
+    var decodeJsonString = decodeURIComponent("{{{result}}}");
+    console.log('hi' + decodeJsonString)
+
+    var resultObj = JSON.parse(decodeJsonString);
+    console.log(resultObj)
+
+    var views = [
+        { view: "text", name: "name", id: "id_name", label: "Name", required: true,value:resultObj.user.name},
+        { view: "text", name: "password", id: "id_pass", label: "Password", type: 'password', },
+        { view: "text", name: "email", id: "id_email", label: "Email", required: true,value:resultObj.user.email },
+        { view: "text", name: "studentNumber", id: "id_sn", label: "Student Number", required: true,value:resultObj.user.studentNumber },
+        { view: "text", name: "dob", id: "id_dob", label: "DOB", required: true, type: 'date',value:resultObj.user.dob },
+        { view: "text", name: "gender", id: "id_gender", label: "Gender", required: true,value:resultObj.user.gender },
+        {
+            view: "uploader", value: "Upload file",
+            name: "uploadFile",
+            multiple: false,
+            upload: 'http://localhost:3000/student/addStudent',
+            link: "list1"
+        },
+        {
+            view: "list", id: "list1", type: "uploader",
+            autoheight: true, borderless: true
+        },
+
+        {
+            view: 'button', type: 'submit', autowidth: true, value: 'Update',
+            click: function () {
+                console.log('clicked')
+                var data = this.getFormView().getValues();
+
+                console.log(data)
+                //fetch('http://localhost:3000/student/login', {method:'POST',body: JSON.stringify(data) })
+                //  .then(response => response.json())
+                //send data to server
+
+                webix.ajax().put("/student/updateStudent?id="+resultObj.user.id, data).then(function (data1) {
+                    console.log('updated')
+                    window.location.href = "http://localhost:3000/student/getStudents"
+                    
+                });
+
+            }
+        },
+        {
+            view: 'button', type: 'submit', autowidth: true, value: 'Delete',
+            click: function () {
+                console.log('clicked')
+                var data = this.getFormView().getValues();
+
+                console.log(data)
+                //fetch('http://localhost:3000/student/login', {method:'POST',body: JSON.stringify(data) })
+                //  .then(response => response.json())
+                //send data to server
+
+                webix.ajax().del("/student/deleteStudent?id="+resultObj.user.id, data).then(function (data1) {
+                    window.location.href = "http://localhost:3000/student/getStudents"
+                });
+
+            }
+        }
+
+    ]
+
+    webix.ui({
+        view: 'form',
+        id: "add_form",
+        minWidth: 400,
+        // elements == rows, cols can be declared instead
+        elements: views
+    });
+</script>
+
+{{!-- <div class="container w-75 mt-5">
     <p class="h3">Edit student details here</p>
     <form class="row g-3 mt-3" method="post" action="updateStudent?id={{user.id}}&_method=PUT"
         enctype="multipart/form-data">
@@ -46,8 +128,7 @@
         </div>
         <div class="col-md-6 mt-1">
             <input type='submit' class="btn btn-primary btn-block btn-danger fw-bold" name='delete student'
-                value="Delete" formmethod="POST"
-                formaction='deleteStudent?id={{ user.id }}&_method=DELETE'>
+                value="Delete" formmethod="POST" formaction='deleteStudent?id={{ user.id }}&_method=DELETE'>
         </div>
     </form>
-</div>
+</div> --}}

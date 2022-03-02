@@ -7,6 +7,113 @@
 
 {{>navbar}}
 
+<script type="text/javascript" charset="utf-8">
+    var decodeJsonString = decodeURIComponent("{{{result}}}");
+    console.log('hi' + decodeJsonString)
+
+    var resultObj = JSON.parse(decodeJsonString);
+    console.log(resultObj)
+
+    var btns = [{
+        view: 'button', autowidth: true, value: 'View students',
+        click: function () {
+            console.log('clicked add student button')
+
+            webix.ajax().get("/student/addStudent",).then(function (data1) {
+                //window.location.href = "http://localhost:3000/student/dashboard";
+                window.location.href = "http://localhost:3000/student/getStudents";
+            });
+
+        }
+    }];
+
+    if (resultObj.user.isAdmin) {
+        btns.push({
+            view: 'button', autowidth: true, value: 'Add Student',
+            click: function () {
+                console.log('clicked add student button')
+
+                webix.ajax().get("/student/addStudent",).then(function (data1) {
+                    //window.location.href = "http://localhost:3000/student/dashboard";
+                    window.location.href = "http://localhost:3000/student/addStudent";
+                });
+
+            }
+        });
+        btns[0].value = 'Admin View Students';
+    }
+
+    console.log(btns)
+
+
+    webix.ready(function () {
+        webix.ui({
+            resizeRow: { size: 6 },
+            rows: [
+                //first row
+                {
+                    cols: [
+                        { template: `<img src='/uploads/${resultObj.imageName}' style='width:100px'>` },
+                        { width: 200 },
+                        {
+                            rows: [
+                                { view: 'label', label: 'Name : ' + resultObj.user.name },
+                                { view: 'label', label: 'DOB : ' + resultObj.user.dob },
+                                { view: 'label', label: 'Email : ' + resultObj.user.email },
+                                { view: 'label', label: 'Gender : ' + resultObj.user.gender },
+                                { view: 'label', label: 'Student Number : ' + resultObj.user.studentNumber }
+                            ]
+                        }
+                    ]
+                },
+                btns[0],
+                btns.length > 1 ? btns[1] : {}
+
+            ]
+        });
+    });
+</script>
+
+{{!--
+<script type="text/javascript" charset="utf-8">
+    var decodeJsonString = decodeURIComponent("{{{result}}}");
+    console.log('hi' + decodeJsonString)
+
+    var resultObj = JSON.parse(decodeJsonString);
+    console.log(resultObj)
+
+    var tables = [];
+    var config = {
+        view: "datatable",
+
+        data: [
+            {
+                template: `<img src='/uploads/${resultObj[0].imageName}' style='width:50px'>`,
+                id: 1, name: resultObj[0].user.name, DOB: resultObj[0].user.dob, email: resultObj[0].user.email,
+
+            }],
+        autoConfig: true,
+    };
+
+    // var imageButton = {
+    //    view: "button",
+    //   type: "image",
+    //  image: "/uploads/" + resultObj[0].imageName,
+    //label: "Image Button"
+
+    //}
+
+    tables.push(config)
+
+
+    webix.ready(function () {
+        webix.ui({
+            rows: tables
+        });
+    });
+</script> --}}
+
+{{!--
 <div class="container">
     <div class="card mb-3 mt-5 mx-auto shadow" style="max-width: 1000px;">
         <div class="row g-0">
@@ -35,8 +142,8 @@
                     </table>
                     {{#if user.isAdmin}}
                     <div class="d-grid gap-2">
-                            <a class="btn btn-primary" href="addStudent">Add New Student</a>
-                            <a class="btn btn-primary" href="getStudents">Admin view</a>
+                        <a class="btn btn-primary" href="addStudent">Add New Student</a>
+                        <a class="btn btn-primary" href="getStudents">Admin view</a>
                     </div>
                     {{else}}
                     <div class="w-100 mt-5">
@@ -47,9 +154,8 @@
             </div>
         </div>
     </div>
-    <div class="row ">
+</div> --}}
 
-
-
-    </div>
-</div>
+{{!-- {
+view: "label",
+label: "<img src='/uploads/'"+resultObj[0].imageName+ " style='height:35px'>" }, --}}

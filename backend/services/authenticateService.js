@@ -27,7 +27,6 @@ options.secretOrKey = process.env.SECRET;
 exports.JWTPassport = passport.use(new JWTStrategy(options,
     (Jwt_payload, done) => {
         console.log("JWT_PAYLOAD", Jwt_payload);
-        console.log('reached here 4')
         User.findOne({ _id: Jwt_payload._id }, (err, user) => {
             if (err) {
                 return done(err, false);

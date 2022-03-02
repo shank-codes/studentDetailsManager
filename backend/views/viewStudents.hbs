@@ -2,6 +2,7 @@
 
 <script>
     var decodeJson = decodeURIComponent("{{{users}}}");
+    console.log(decodeJson)
     var jsonObj = JSON.parse(decodeJson);
 
     var tables = [];
@@ -15,5 +16,4 @@
     webix.ui({
         rows:tables
     });
-    
 </script>

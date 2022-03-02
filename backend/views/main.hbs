@@ -1,1 +1,21 @@
-<h1>Welcome, lets rock and roll</h1>
+<script type="text/javascript" charset="utf-8">
+    var decodeJsonString = decodeURIComponent("{{{result}}}");
+    console.log('hi'+decodeJsonString)
+
+    var resultObj = JSON.parse(decodeJsonString);
+
+    var tables = [];
+    var config = {
+        view: "datatable",
+        data: webix.copy(resultObj),
+        autoConfig: true
+    };
+
+    tables.push(config)
+
+    webix.ready(function () {
+        webix.ui({
+            rows: tables
+        });
+    });
+</script>

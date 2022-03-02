@@ -32,14 +32,14 @@ exports.getImages = async () => {
 exports.deleteImage = async(imageId) => {
     try{
         let deletedImage = await imageDAO.deleteImage(imageId)
-
-        fs.unlink(
-            "public/uploads/" + deletedImage.image.imageName,
-            (err, files) => {
-              if (err) throw err;
-            }
-          );
-
+        if(deletedImage.image.imageName!="default.jpg") {
+            fs.unlink(
+                "public/uploads/" + deletedImage.image.imageName,
+                (err, files) => {
+                  if (err) throw err;
+                }
+              );
+        }
         console.log('image deleted successfully')
         return {success:true, image:deletedImage.image}
     }

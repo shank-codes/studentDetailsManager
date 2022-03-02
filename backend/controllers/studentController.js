@@ -12,7 +12,13 @@ const authenticateService = require("../services/authenticateService");
 const Storage = multer.diskStorage({
   destination: "public/uploads",
   filename: (req, file, cb) => {
-    cb(null, req.ui + file.originalname);
+    if(file!=undefined) {
+      cb(null, req.ui + file.originalname);
+    }
+    else {
+      cb(null, "default.jpg");
+    }
+    
   },
 });
 
@@ -84,9 +90,12 @@ router.get("/getStudents", async (req, res) => {
           if (user.isAdmin) {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/html");
-            res.render("adminViewStudents", {
-              users: studentData,
-              enableSearch: true,
+            res.render("adminViewStudents", {enableSearch: true,
+              result: encodeURIComponent(
+                JSON.stringify({
+                  users: studentData,
+                })
+              ),
             });
           } else {
             res.statusCode = 200;
@@ -124,6 +133,7 @@ router
   .route("/updateStudent")
   .get(async (req, res) => {
     try {
+      console.log('reached here')
       req.headers["authorization"] = "Bearer " + req.cookies.token;
       passport.authenticate("jwt", async (err, user, info) => {
         console.log("getSTudents inside passport . authenticate");
@@ -133,7 +143,7 @@ router
           res.json({ success: false, Error: err });
         } else if (user) {
           if (user.isAdmin) {
-            let result = await studentService.getStudentById(req.query.id)
+            let result = await studentService.getStudentById(req.query.id);
             let studentDetails = {
               id: result.student._id,
               name: result.student.name,
@@ -142,8 +152,13 @@ router
               gender: result.student.gender,
               imageName: result.student.image.imageName,
               studentNumber: result.student.username,
-            }
-            res.render('edit',{user:studentDetails})
+            };
+            
+            res.render("edit", { result:encodeURIComponent(
+              JSON.stringify({
+                user: studentDetails
+              })
+            ) });
           } else {
             res.send("you are not an admin");
           }
@@ -211,14 +226,16 @@ router
                     throw new Error("cannot add student");
 
                   res.statusCode = 200;
-                  res.redirect('getStudents');
+                 // res.redirect("getStudents");
+                 res.json({success:true})
                 } else {
                   let student = await studentService.updateStudent(
                     req.query.id,
                     req.body
                   );
                   res.status = 200;
-                  res.redirect('getStudents');
+                  //res.redirect("getStudents");
+                  res.json({success:true})
                 }
               }
             });
@@ -258,7 +275,7 @@ router.delete("/deleteStudent", async (req, res) => {
         if (user.isAdmin) {
           let student = await studentService.deleteStudent(req.query.id);
           res.status = 200;
-          res.redirect("getStudents");
+          res.json({msg:"deleted successfully"});
         } else {
           res.send("you are not an admin");
         }
@@ -299,9 +316,9 @@ router
               expire: new Date() + 9999,
             });
             res.statusCode = 200;
-            res.setHeader("Content-Type", "text/html");
+            res.setHeader("Content-Type", "application/json");
             //res.json({ Success: true, status: "Login successful!", UserID: user._id });
-            res.redirect("dashboard");
+            res.json({ success: true });
           } else if (info) {
             let url = "/student" + req.url;
             res.statusCode = 403;
@@ -388,9 +405,19 @@ router
               console.log(err);
             } else {
               console.log(req.file);
-              let imageSaveResult = await imageService.saveImage(
-                req.file.filename
-              );
+              let imageSaveResult
+              if(req.file!= undefined) {
+                 imageSaveResult = await imageService.saveImage(
+                  req.file.filename
+                );
+              }
+              else {
+                imageSaveResult = await imageService.saveImage(
+                  "default.jpg"
+                );
+
+              }
+              
               if (!imageSaveResult.success) throw new Error("cannot add image");
 
               let studentSaveResult = await studentService.addStudent(
@@ -400,11 +427,11 @@ router
 
               if (!studentSaveResult.success)
                 throw new Error("cannot add student");
-              passport.authenticate("local")(req, res, () => {
+              
                 res.statusCode = 200;
                 res.setHeader("Content-type", "text/html");
-                res.redirect('getStudents');
-              });
+                res.json({success: true});
+  
             }
           });
         } else {
@@ -436,16 +463,24 @@ router.get("/dashboard", async (req, res) => {
           gender: user.gender,
         };
         if (user.isAdmin) {
-          console.log("reached here ewewrefwe");
+          console.log("user is admin");
           userDetails.isAdmin = true;
+        } else {
+          userDetails.isAdmin = false;
         }
 
         let image = await imageService.getImageById(user.image);
         console.log(image.image.imageName);
         res.render("dashboard", {
-          user: userDetails,
-          imageName: image.image.imageName,
+          result: encodeURIComponent(
+            JSON.stringify({
+              successs: true,
+              user: userDetails,
+              imageName: image.image.imageName,
+            })
+          ),
         });
+        //users: encodeURIComponent(JSON.stringify(studentData))
       } else if (info) {
         res.statusCode = 403;
         res.setHeader("Content-Type", "application/json");
