@@ -4,6 +4,8 @@ const multer = require("multer");
 const { v1: uuidv1 } = require("uuid");
 const passport = require("passport");
 
+const i18next = require('i18next')
+
 const imageService = require("../services/imageService");
 const studentService = require("../services/studentService");
 const authenticateService = require("../services/authenticateService");
@@ -293,10 +295,19 @@ router.delete("/deleteStudent", async (req, res) => {
 
 router
   .route("/login")
-  .get((req, res) => {
-    res.render("login");
+  .get( async (req, res) => {
+
+    let lang = await i18next.changeLanguage('hi');
+    let context = {
+      hi: lang('hi'),
+      welcome: lang('welcome_msg')
+    }
+    res.render("login", {
+    result: encodeURIComponent(
+      JSON.stringify(context)
+    )});
   })
-  .post((req, res) => {
+  .post(async (req, res) => {
     try {
       if (req.body.studentNumber == "" || req.body.password == "") {
         let url = "/student" + req.url;

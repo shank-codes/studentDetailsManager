@@ -35,11 +35,18 @@ elements:[
         //   <input class="form-control" type="file" id="formFile" name="uploadImage" accept=".jpg, .jpeg, .png">
         {
             view: "uploader", value: "Upload file",
+            id: 'upl1',
             name: "uploadFile",
             multiple: false,
-            upload: 'http://localhost:3000/student/addStudent',
-            link: "list1"
+            upload: 'http://localhost:3000/image/uploadImage',
+            link: "list1",
+            autosend:false
         },
+        //$$("upl1").send(function (response) {
+        //    if (response)
+        //        webix.message(response.status);
+        //})
+
         {
             view: "list", id: "list1", type: "uploader",
             autoheight: true, borderless: true
@@ -54,9 +61,14 @@ elements:[
 
                 console.log(data)
 
+              //  $$("upl1").send(function (response) {
+              //      if (response)
+              //          webix.message(response);
+               // })
+
                 webix.ajax().post("/student/addStudent", data).then(function (data1) {
-                    window.location.href = "http://localhost:3000/student/getStudents"
-                });
+                     window.location.href = "http://localhost:3000/student/getStudents"
+                 });
 
             }
         }

@@ -16,6 +16,13 @@
 </div> --}}
 
 <script type="text/javascript" charset="utf-8">
+
+    var decodeJsonString = decodeURIComponent("{{{result}}}");
+    console.log('hi' + decodeJsonString)
+
+    var resultObj = JSON.parse(decodeJsonString);
+    console.log(resultObj)
+
     webix.ready(function () {
         webix.ui({
             view: "form",
@@ -24,6 +31,8 @@
             method: 'get',
             maxWidth: 500,
             elements: [
+                { view: 'label', label: resultObj.hi },
+                { view: 'label', label: resultObj.welcome },
 
                 { view: 'label', label: 'StudentNumber', width: 150, for: 'hi' },
                 { view: 'text', type: 'text', name: 'studentNumber', id: 'hi' },
@@ -39,12 +48,12 @@
                         //fetch('http://localhost:3000/student/login', {method:'POST',body: JSON.stringify(data) })
                         //  .then(response => response.json())
                         //send data to server
-                        
-                        webix.ajax().post("/student/login", data).then(function(data1){
-                                //window.location.href = "http://localhost:3000/student/dashboard";
-                                window.location.href = "http://localhost:3000/student/dashboard";
+
+                        webix.ajax().post("/student/login", data).then(function (data1) {
+                            //window.location.href = "http://localhost:3000/student/dashboard";
+                            window.location.href = "http://localhost:3000/student/dashboard";
                         });
-    
+
                     }
                 }
             ],
