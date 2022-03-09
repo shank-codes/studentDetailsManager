@@ -1,0 +1,9 @@
+{
+  "login": {
+    "hi": "hi",
+    "welcome": "Welcome to my app",
+    "studentNumber": "StudentNumber",
+    "password": "Password",
+    "login": "LogIn"
+  }
+}

@@ -9,37 +9,12 @@ const path = require('path')
 const cors = require('cors')
 const methodOverride = require('method-override')
 
-//i18next imports
-const i18next= require("i18next")
-const HttpBackend = require("i18next-http-backend")
-const LanguageDetector = require("i18next-browser-languagedetector")
 
 
 const imageRouter = require("./controllers/imageController");
 const studentRouter = require("./controllers/studentController");
 
 const app = express();
-
-// setup i18nexus
-const apiKey = "pNT2PvyuVzU0SFBgkCvkgQ";
-const loadPath = `https://api.i18nexus.com/project_resources/translations/{{lng}}/{{ns}}.json?api_key=${apiKey}`;
-
-i18next
-  .use(HttpBackend)
-  .use(LanguageDetector)
-  .init({
-    fallbackLng: "en",
-
-    ns: ["default"],
-    defaultNS: "default",
-
-    supportedLngs: ["en","kn","hi"],
-    
-    backend: {
-      loadPath: loadPath
-    }
-  })
-
 
 //middlewares
 app.use(cors())

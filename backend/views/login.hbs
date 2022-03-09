@@ -31,15 +31,15 @@
             method: 'get',
             maxWidth: 500,
             elements: [
-                { view: 'label', label: resultObj.hi },
+
                 { view: 'label', label: resultObj.welcome },
 
-                { view: 'label', label: 'StudentNumber', width: 150, for: 'hi' },
+                { view: 'label', label: resultObj.studentNumber, width: 150, for: 'hi' },
                 { view: 'text', type: 'text', name: 'studentNumber', id: 'hi' },
-                { view: 'label', label: 'Password', width: 150, for: 'pass' },
+                { view: 'label', label: resultObj.password, width: 150, for: 'pass' },
                 { view: 'text', type: 'password', name: 'password', id: 'pass' },
                 {
-                    view: 'button', type: 'submit', autowidth: true, value: 'LogIn',
+                    view: 'button', type: 'submit', autowidth: true, value: resultObj.login,
                     click: function () {
                         console.log('clicked')
                         var data = this.getFormView().getValues();

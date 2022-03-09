@@ -4,23 +4,23 @@ const multer = require("multer");
 const { v1: uuidv1 } = require("uuid");
 const passport = require("passport");
 
-const i18next = require('i18next')
+const i18n = require("../i18n");
+const staticTranslate = require('../services/staticTranslation')
 
 const imageService = require("../services/imageService");
 const studentService = require("../services/studentService");
 const authenticateService = require("../services/authenticateService");
+const { json } = require("express");
 
 //set up storage to store images
 const Storage = multer.diskStorage({
   destination: "public/uploads",
   filename: (req, file, cb) => {
-    if(file!=undefined) {
+    if (file != undefined) {
       cb(null, req.ui + file.originalname);
-    }
-    else {
+    } else {
       cb(null, "default.jpg");
     }
-    
   },
 });
 
@@ -92,7 +92,8 @@ router.get("/getStudents", async (req, res) => {
           if (user.isAdmin) {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/html");
-            res.render("adminViewStudents", {enableSearch: true,
+            res.render("adminViewStudents", {
+              enableSearch: true,
               result: encodeURIComponent(
                 JSON.stringify({
                   users: studentData,
@@ -135,7 +136,7 @@ router
   .route("/updateStudent")
   .get(async (req, res) => {
     try {
-      console.log('reached here')
+      console.log("reached here");
       req.headers["authorization"] = "Bearer " + req.cookies.token;
       passport.authenticate("jwt", async (err, user, info) => {
         console.log("getSTudents inside passport . authenticate");
@@ -155,12 +156,14 @@ router
               imageName: result.student.image.imageName,
               studentNumber: result.student.username,
             };
-            
-            res.render("edit", { result:encodeURIComponent(
-              JSON.stringify({
-                user: studentDetails
-              })
-            ) });
+
+            res.render("edit", {
+              result: encodeURIComponent(
+                JSON.stringify({
+                  user: studentDetails,
+                })
+              ),
+            });
           } else {
             res.send("you are not an admin");
           }
@@ -228,8 +231,8 @@ router
                     throw new Error("cannot add student");
 
                   res.statusCode = 200;
-                 // res.redirect("getStudents");
-                 res.json({success:true})
+                  // res.redirect("getStudents");
+                  res.json({ success: true });
                 } else {
                   let student = await studentService.updateStudent(
                     req.query.id,
@@ -237,7 +240,7 @@ router
                   );
                   res.status = 200;
                   //res.redirect("getStudents");
-                  res.json({success:true})
+                  res.json({ success: true });
                 }
               }
             });
@@ -277,7 +280,7 @@ router.delete("/deleteStudent", async (req, res) => {
         if (user.isAdmin) {
           let student = await studentService.deleteStudent(req.query.id);
           res.status = 200;
-          res.json({msg:"deleted successfully"});
+          res.json({ msg: "deleted successfully" });
         } else {
           res.send("you are not an admin");
         }
@@ -295,17 +298,24 @@ router.delete("/deleteStudent", async (req, res) => {
 
 router
   .route("/login")
-  .get( async (req, res) => {
+  .get(async (req, res) => {
+    const lang = i18n("hi");
 
-    let lang = await i18next.changeLanguage('hi');
-    let context = {
-      hi: lang('hi'),
-      welcome: lang('welcome_msg')
-    }
+    const context = await staticTranslate.translate('kn','login')
+
+    // let lang = await i18next.changeLanguage(language);
+    // const context = lang("login")
+    // console.log(JSON.stringify(context))
+    // context = {
+    //   hi: lang("login.hi")
+    //   // welcome: lang(login.hi),
+    //   // studentNumber: lang(login.hi),
+    //   // password: lang(login.hi),
+    //   // login: lang(login.hi),
+    // };
     res.render("login", {
-    result: encodeURIComponent(
-      JSON.stringify(context)
-    )});
+      result: encodeURIComponent(JSON.stringify(context)),
+    });
   })
   .post(async (req, res) => {
     try {
@@ -416,19 +426,15 @@ router
               console.log(err);
             } else {
               console.log(req.file);
-              let imageSaveResult
-              if(req.file!= undefined) {
-                 imageSaveResult = await imageService.saveImage(
+              let imageSaveResult;
+              if (req.file != undefined) {
+                imageSaveResult = await imageService.saveImage(
                   req.file.filename
                 );
+              } else {
+                imageSaveResult = await imageService.saveImage("default.jpg");
               }
-              else {
-                imageSaveResult = await imageService.saveImage(
-                  "default.jpg"
-                );
 
-              }
-              
               if (!imageSaveResult.success) throw new Error("cannot add image");
 
               let studentSaveResult = await studentService.addStudent(
@@ -438,11 +444,10 @@ router
 
               if (!studentSaveResult.success)
                 throw new Error("cannot add student");
-              
-                res.statusCode = 200;
-                res.setHeader("Content-type", "text/html");
-                res.json({success: true});
-  
+
+              res.statusCode = 200;
+              res.setHeader("Content-type", "text/html");
+              res.json({ success: true });
             }
           });
         } else {
