@@ -5,5 +5,44 @@
     "studentNumber": "ವಿದ್ಯಾರ್ಥಿ ಸಂಖ್ಯೆ",
     "password": "ಪಾಸ್ವರ್ಡ್",
     "login": "ಲಾಗಿನ್"
+  },
+  "dashboard": {
+    "name": "ಹೆಸರು",
+    "dob": "DOB",
+    "email": "ಇಮೇಲ್",
+    "gender": "ಲಿಂಗ",
+    "studentNumber": "ವಿದ್ಯಾರ್ಥಿ ಸಂಖ್ಯೆ",
+    "adminView": "ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ನಿರ್ವಾಹಕರಂತೆ ವೀಕ್ಷಿಸಿ",
+    "addStudent": "ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಸೇರಿಸಿ",
+    "viewStudents": "ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
+  },
+  "adminViewStudents": {
+    "image": "ಚಿತ್ರ",
+    "name": "ಹೆಸರು",
+    "dob": "DOB",
+    "email": "ಇಮೇಲ್",
+    "gender": "ಲಿಂಗ",
+    "studentNumber": "ವಿದ್ಯಾರ್ಥಿ ಸಂಖ್ಯೆ"
+  },
+  "edit" : {
+    "name": "ಹೆಸರು",
+    "dob": "DOB",
+    "email": "ಇಮೇಲ್",
+    "gender": "ಲಿಂಗ",
+    "studentNumber": "ವಿದ್ಯಾರ್ಥಿ ಸಂಖ್ಯೆ",
+    "password": "ಪಾಸ್ವರ್ಡ್",
+    "upload": "ಅಪ್ಲೋಡ್ ಫೈಲ್",
+    "update": "ಅಪ್‌ಡೇಟ್",
+    "delete": "ಅಳಿಸು"
+  },
+  "signup" : {
+    "name": "ಹೆಸರು",
+    "dob": "DOB",
+    "email": "ಇಮೇಲ್",
+    "gender": "ಲಿಂಗ",
+    "studentNumber": "ವಿದ್ಯಾರ್ಥಿ ಸಂಖ್ಯೆ",
+    "password": "ಪಾಸ್ವರ್ಡ್",
+    "upload": "ಅಪ್ಲೋಡ್ ಫೈಲ್",
+    "add": "ಸೇರಿಸಿ"
   }
 }

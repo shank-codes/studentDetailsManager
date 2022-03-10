@@ -15,7 +15,7 @@
     console.log(resultObj)
 
     var btns = [{
-        view: 'button', autowidth: true, value: 'View students',
+        view: 'button', autowidth: true, value: resultObj.context.viewStudents,
         click: function () {
             console.log('clicked add student button')
 
@@ -29,7 +29,7 @@
 
     if (resultObj.user.isAdmin) {
         btns.push({
-            view: 'button', autowidth: true, value: 'Add Student',
+            view: 'button', autowidth: true, value: resultObj.context.addStudent,
             click: function () {
                 console.log('clicked add student button')
 
@@ -40,7 +40,7 @@
 
             }
         });
-        btns[0].value = 'Admin View Students';
+        btns[0].value = resultObj.context.adminView;
     }
 
     console.log(btns)
@@ -57,11 +57,11 @@
                         { width: 200 },
                         {
                             rows: [
-                                { view: 'label', label: 'Name : ' + resultObj.user.name },
-                                { view: 'label', label: 'DOB : ' + resultObj.user.dob },
-                                { view: 'label', label: 'Email : ' + resultObj.user.email },
-                                { view: 'label', label: 'Gender : ' + resultObj.user.gender },
-                                { view: 'label', label: 'Student Number : ' + resultObj.user.studentNumber }
+                                { view: 'label', label: `${resultObj.context.name} : ` + resultObj.user.name },
+                                { view: 'label', label: `${resultObj.context.dob} : ` + resultObj.user.dob },
+                                { view: 'label', label: `${resultObj.context.email} : ` + resultObj.user.email },
+                                { view: 'label', label: `${resultObj.context.gender} : ` + resultObj.user.gender },
+                                { view: 'label', label: `${resultObj.context.studentNumber} : ` + resultObj.user.studentNumber }
                             ]
                         }
                     ]

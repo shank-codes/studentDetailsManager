@@ -12,6 +12,18 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="logout">Log-out</a>
         </li>
+
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Language
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ navBarSt.path }}&language=en">English</a>
+          <a class="dropdown-item" href="{{ navBarSt.path }}&language=hi">हिन्दी</a>
+          <a class="dropdown-item" href="{{ navBarSt.path }}&language=kn">ಕನ್ನಡ</a>
+        </div>
+      </li>
+
       </ul>
       {{#if enableSearch}}
       <form class="d-flex" action="getStudents" method="GET">

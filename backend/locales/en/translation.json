@@ -5,5 +5,44 @@
     "studentNumber": "StudentNumber",
     "password": "Password",
     "login": "LogIn"
+  },
+  "dashboard": {
+    "name": "Name",
+    "dob": "DOB",
+    "email": "Email",
+    "gender": "Gender",
+    "studentNumber": "StudentNumber",
+    "adminView": "View Students as Admin",
+    "addStudent": "Add Student",
+    "viewStudents": "View Students"
+  },
+  "adminViewStudents": {
+    "image": "Image",
+    "name": "Name",
+    "dob": "DOB",
+    "email": "Email",
+    "gender": "Gender",
+    "studentNumber": "StudentNumber"
+  },
+  "edit": {
+    "name": "Name",
+    "password": "Password",
+    "email": "Email",
+    "studentNumber": "StudentNumber",
+    "dob": "DOB",
+    "gender": "Gender",
+    "upload": "Upload File",
+    "update": "Update",
+    "delete": "Delete"
+  },
+  "signup": {
+    "name": "Name",
+    "password": "Password",
+    "email": "Email",
+    "studentNumber": "StudentNumber",
+    "dob": "DOB",
+    "gender": "Gender",
+    "upload": "Upload File",
+    "add": "Add"
   }
 }

@@ -1,8 +1,8 @@
 const i18n = require("../i18n");
-const pageObj = require("../locales/en/translation.json");
+const localePage = require("../locales/en/translation.json");
 
-exports.translate = async (language,objStr) => {
-  const context = pageObj[objStr];
+exports.translate = async (language,pageName) => {
+  const context = localePage[pageName];
   const lang = i18n(language);
 
   const keys = Object.keys(context);
@@ -13,11 +13,10 @@ exports.translate = async (language,objStr) => {
   const langObj ={}
 
   keys.forEach((key, index) => {
-      langObj[key] = lang(objStr+"."+key)
-    console.log(`${key}: ${lang(objStr+"."+key)}`);
+      langObj[key] = lang(pageName+"."+key)
+    console.log(`${key}: ${lang(pageName+"."+key)}`);
   });
   console.log(langObj)
 
   return langObj
-  //console.log(`here ${context}`);
 };

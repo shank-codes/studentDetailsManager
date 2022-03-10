@@ -5,7 +5,7 @@ const { v1: uuidv1 } = require("uuid");
 const passport = require("passport");
 
 const i18n = require("../i18n");
-const staticTranslate = require('../services/staticTranslation')
+const staticTranslate = require("../services/staticTranslation");
 
 const imageService = require("../services/imageService");
 const studentService = require("../services/studentService");
@@ -76,6 +76,12 @@ router.get("/getStudents", async (req, res) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ success: false, Error: err });
       } else if (user) {
+        let language = decideLanguage(req, res);
+        const context = await staticTranslate.translate(
+          language,
+          "adminViewStudents"
+        );
+
         let result = await studentService.getStudents(req.query);
         if (result.success) {
           let studentData = result.students.map((obj) => {
@@ -93,10 +99,14 @@ router.get("/getStudents", async (req, res) => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/html");
             res.render("adminViewStudents", {
+              navBarSt: {
+                path: `/student/getStudents?`,
+              },
               enableSearch: true,
               result: encodeURIComponent(
                 JSON.stringify({
                   users: studentData,
+                  context: context,
                 })
               ),
             });
@@ -104,8 +114,16 @@ router.get("/getStudents", async (req, res) => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/html");
             res.render("viewStudents", {
+              navBarSt: {
+                path: "/student/dashboard?",
+              },
               enableSearch: true,
-              users: encodeURIComponent(JSON.stringify(studentData)),
+              users: encodeURIComponent(
+                JSON.stringify({
+                  users: studentData,
+                  context: context,
+                })
+              ),
             });
           }
         }
@@ -146,6 +164,9 @@ router
           res.json({ success: false, Error: err });
         } else if (user) {
           if (user.isAdmin) {
+            let language = decideLanguage(req, res);
+            const context = await staticTranslate.translate(language, "edit");
+
             let result = await studentService.getStudentById(req.query.id);
             let studentDetails = {
               id: result.student._id,
@@ -158,9 +179,13 @@ router
             };
 
             res.render("edit", {
+              navBarSt: {
+                path: `/student/updateStudent?id=${req.query.id}`,
+              },
               result: encodeURIComponent(
                 JSON.stringify({
                   user: studentDetails,
+                  context: context,
                 })
               ),
             });
@@ -299,20 +324,9 @@ router.delete("/deleteStudent", async (req, res) => {
 router
   .route("/login")
   .get(async (req, res) => {
-    const lang = i18n("hi");
+    let language = decideLanguage(req, res);
+    const context = await staticTranslate.translate(language, "login");
 
-    const context = await staticTranslate.translate('kn','login')
-
-    // let lang = await i18next.changeLanguage(language);
-    // const context = lang("login")
-    // console.log(JSON.stringify(context))
-    // context = {
-    //   hi: lang("login.hi")
-    //   // welcome: lang(login.hi),
-    //   // studentNumber: lang(login.hi),
-    //   // password: lang(login.hi),
-    //   // login: lang(login.hi),
-    // };
     res.render("login", {
       result: encodeURIComponent(JSON.stringify(context)),
     });
@@ -396,7 +410,18 @@ router
         res.json({ success: false, Error: err });
       } else if (user) {
         if (user.isAdmin) {
-          res.render("signUp", { msg: "Add Student details here" });
+          let language = decideLanguage(req, res);
+          const context = await staticTranslate.translate(language, "signup");
+          res.render("signUp", {
+            navBarSt: {
+              path: "/student/addStudent?",
+            },
+            result: encodeURIComponent(
+              JSON.stringify({
+                context: context,
+              })
+            ),
+          });
         } else {
           res.send("you are not an admin");
         }
@@ -471,6 +496,9 @@ router.get("/dashboard", async (req, res) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ success: false, Error: err });
       } else if (user) {
+        let language = decideLanguage(req, res);
+        const context = await staticTranslate.translate(language, "dashboard");
+
         let userDetails = {
           name: user.name,
           dob: user.dob,
@@ -487,12 +515,17 @@ router.get("/dashboard", async (req, res) => {
 
         let image = await imageService.getImageById(user.image);
         console.log(image.image.imageName);
+
         res.render("dashboard", {
+          navBarSt: {
+            path: "/student/dashboard?",
+          },
           result: encodeURIComponent(
             JSON.stringify({
               successs: true,
               user: userDetails,
               imageName: image.image.imageName,
+              context: context,
             })
           ),
         });
@@ -510,3 +543,16 @@ router.get("/dashboard", async (req, res) => {
 });
 
 module.exports = router;
+
+var decideLanguage = (req, res) => {
+  //DECIDING ON THE LANGUAGE
+  let language;
+  if (typeof req.query.language != "undefined") {
+    language = req.query.language;
+    res.cookie("language", language);
+  } else if (req.cookies.language) {
+    language = req.cookies.language;
+  } else language = req.headers["accept-language"].substring(0, 2);
+
+  return language;
+};

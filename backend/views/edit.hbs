@@ -16,14 +16,14 @@ studentNumber: result.student.username, --}}
     console.log(resultObj)
 
     var views = [
-        { view: "text", name: "name", id: "id_name", label: "Name", required: true,value:resultObj.user.name},
-        { view: "text", name: "password", id: "id_pass", label: "Password", type: 'password', },
-        { view: "text", name: "email", id: "id_email", label: "Email", required: true,value:resultObj.user.email },
-        { view: "text", name: "studentNumber", id: "id_sn", label: "Student Number", required: true,value:resultObj.user.studentNumber },
-        { view: "text", name: "dob", id: "id_dob", label: "DOB", required: true, type: 'date',value:resultObj.user.dob },
-        { view: "text", name: "gender", id: "id_gender", label: "Gender", required: true,value:resultObj.user.gender },
+        { view: "text", name: "name", id: "id_name", label: resultObj.context.name, required: true,value:resultObj.user.name},
+        { view: "text", name: "password", id: "id_pass", label:  resultObj.context.password, type: 'password', },
+        { view: "text", name: "email", id: "id_email", label:  resultObj.context.email, required: true,value:resultObj.user.email },
+        { view: "text", name: "studentNumber", id: "id_sn", label:  resultObj.context.studentNumber, required: true,value:resultObj.user.studentNumber },
+        { view: "text", name: "dob", id: "id_dob", label:  resultObj.context.dob, required: true, type: 'date',value:resultObj.user.dob },
+        { view: "text", name: "gender", id: "id_gender", label:  resultObj.context.gender, required: true,value:resultObj.user.gender },
         {
-            view: "uploader", value: "Upload file",
+            view: "uploader", value:  resultObj.context.upload,
             name: "uploadFile",
             multiple: false,
             upload: 'http://localhost:3000/student/addStudent',
@@ -35,7 +35,7 @@ studentNumber: result.student.username, --}}
         },
 
         {
-            view: 'button', type: 'submit', autowidth: true, value: 'Update',
+            view: 'button', type: 'submit', autowidth: true, value:  resultObj.context.update,
             click: function () {
                 console.log('clicked')
                 var data = this.getFormView().getValues();
@@ -54,7 +54,7 @@ studentNumber: result.student.username, --}}
             }
         },
         {
-            view: 'button', type: 'submit', autowidth: true, value: 'Delete',
+            view: 'button', type: 'submit', autowidth: true, value: resultObj.context.delete,
             click: function () {
                 console.log('clicked')
                 var data = this.getFormView().getValues();

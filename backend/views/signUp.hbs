@@ -24,23 +24,29 @@ elements:[
 
 <script>
 
+    var decodeJsonString = decodeURIComponent("{{{result}}}");
+    console.log('hi' + decodeJsonString)
+
+    var resultObj = JSON.parse(decodeJsonString);
+    console.log(resultObj)
+
     var views = [
-        { view: "text", name: "name", id: "id_name", label: "Name", required: true },
-        { view: "text", name: "password", id: "id_pass", label: "Password", type: 'password', required: true },
-        { view: "text", name: "email", id: "id_email", label: "Email", required: true },
-        { view: "text", name: "studentNumber", id: "id_sn", label: "Student Number", required: true },
-        { view: "text", name: "dob", id: "id_dob", label: "DOB", required: true, type: 'date' },
-        { view: "text", name: "gender", id: "id_gender", label: "Gender", required: true },
+        { view: "text", name: "name", id: "id_name", label: resultObj.context.name , required: true },
+        { view: "text", name: "password", id: "id_pass", label: resultObj.context.password , type: 'password', required: true },
+        { view: "text", name: "email", id: "id_email", label: resultObj.context.email, required: true },
+        { view: "text", name: "studentNumber", id: "id_sn", label: resultObj.context.studentNumber , required: true },
+        { view: "text", name: "dob", id: "id_dob", label: resultObj.context.dob , required: true, type: 'date' },
+        { view: "text", name: "gender", id: "id_gender", label: resultObj.context.gender , required: true },
 
         //   <input class="form-control" type="file" id="formFile" name="uploadImage" accept=".jpg, .jpeg, .png">
         {
-            view: "uploader", value: "Upload file",
+            view: "uploader", value: resultObj.context.upload,
             id: 'upl1',
             name: "uploadFile",
             multiple: false,
             upload: 'http://localhost:3000/image/uploadImage',
             link: "list1",
-            autosend:false
+            autosend: false
         },
         //$$("upl1").send(function (response) {
         //    if (response)
@@ -54,21 +60,21 @@ elements:[
 
 
         {
-            view: 'button', type: 'submit', autowidth: true, value: 'Add',
+            view: 'button', type: 'submit', autowidth: true, value: resultObj.context.add,
             click: function () {
                 console.log('clicked')
                 var data = this.getFormView().getValues();
 
                 console.log(data)
 
-              //  $$("upl1").send(function (response) {
-              //      if (response)
-              //          webix.message(response);
-               // })
+                //  $$("upl1").send(function (response) {
+                //      if (response)
+                //          webix.message(response);
+                // })
 
                 webix.ajax().post("/student/addStudent", data).then(function (data1) {
-                     window.location.href = "http://localhost:3000/student/getStudents"
-                 });
+                    window.location.href = "http://localhost:3000/student/getStudents"
+                });
 
             }
         }

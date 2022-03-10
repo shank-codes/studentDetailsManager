@@ -5,5 +5,45 @@
     "studentNumber": "छात्र संख्या",
     "password": "पासवर्ड",
     "login": "लॉगिन"
-  }
+  },
+  "dashboard": {
+    "name": "नाम",
+    "dob": "डी.ओ.बी",
+    "email": "ईमेल",
+    "gender": "लिंग",
+    "studentNumber": "छात्र संख्या",
+    "adminView": "छात्रों को व्यवस्थापक के रूप में देखें",
+    "addStudent": "छात्र जोड़ें",
+    "viewStudents": "छात्रों को देखें"
+  },
+  "adminViewStudents": {
+    "image" : "छवि",
+    "name": "नाम",
+    "dob": "डी.ओ.बी",
+    "email": "ईमेल",
+    "gender": "लिंग",
+    "studentNumber": "छात्र संख्या"
+  },
+  "edit" : {
+    "name": "नाम",
+    "password": "पासवर्ड",
+    "dob": "डी.ओ.बी",
+    "email": "ईमेल",
+    "gender": "लिंग",
+    "studentNumber": "छात्र संख्या",
+    "upload": "फ़ाइल अपलोड करें",
+    "update": "अपडेट",
+    "delete": "डिलीट"
+  },
+ "signup" : {
+    "name": "नाम",
+    "password": "पासवर्ड",
+    "dob": "डी.ओ.बी",
+    "email": "ईमेल",
+    "gender": "लिंग",
+    "studentNumber": "छात्र संख्या",
+    "upload": "फ़ाइल अपलोड करें",
+    "add": "जोड़ें"
+ }
 }
+

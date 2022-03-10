@@ -2,18 +2,41 @@
 
 <script>
     var decodeJson = decodeURIComponent("{{{users}}}");
-    console.log(decodeJson)
+    //console.log(decodeJson)
     var jsonObj = JSON.parse(decodeJson);
+    console.log(jsonObj)
+
+    let count = 1;
+    var studentData = jsonObj.users.map(obj => {
+        return ({
+            rank: count++,
+            image: `<img src='/uploads/${obj.imageName}' style='width:30px'>`,
+            name: obj.name,
+            dob: obj.dob,
+            gender: obj.gender,
+            email: obj.email,
+            studentNumber: obj.studentNumber
+        })
+    })
 
     var tables = [];
     var config = {
-        view:"datatable", 
-        data:webix.copy(jsonObj), 
-        autoConfig:true 
+        view: "datatable",
+        columns: [
+            { id: "rank", header:"", width: 30 },
+            { id: "image", header: jsonObj.context.image, width: 100 },
+            { id: "name", header: jsonObj.context.name, width: 200 },
+            { id: "dob", header: jsonObj.context.dob, width: 100 },
+            { id: "gender", header: jsonObj.context.gender, width: 100 },
+            { id: "email", header: jsonObj.context.email, width: 200 },
+            { id: "studentNumber", header: jsonObj.context.studentNumber, width: 200 }
+        ],
+        data: webix.copy(studentData),
+        autoConfig: true
     };
     tables.push(config)
-    
+
     webix.ui({
-        rows:tables
+        rows: tables
     });
 </script>
