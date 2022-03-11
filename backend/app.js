@@ -10,7 +10,6 @@ const cors = require('cors')
 const methodOverride = require('method-override')
 
 
-
 const imageRouter = require("./controllers/imageController");
 const studentRouter = require("./controllers/studentController");
 

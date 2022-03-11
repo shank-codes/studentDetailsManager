@@ -1,22 +1,41 @@
 const i18n = require("../i18n");
 const localePage = require("../locales/en/translation.json");
 
-exports.translate = async (language,pageName) => {
+const localeDAO = require("../DAO/localeDAO");
+
+var getTranslations = async (language) => {
+  try {
+    if (language === "hi") {
+      return await localeDAO.getTranslations("hi");
+    } else if (language === "kn") {
+      return await localeDAO.getTranslations("kn");
+    } else {
+      return await localeDAO.getTranslations("en");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.translate = async (language, pageName) => {
   const context = localePage[pageName];
-  const lang = i18n(language);
+  //const lang = i18n(language);
+  //console.log(lang)
 
   const keys = Object.keys(context);
 
   // print all keys
-
   console.log(keys);
-  const langObj ={}
+
+  const staticTranslations = await getTranslations(language);
+  const langObj = {};
 
   keys.forEach((key, index) => {
-      langObj[key] = lang(pageName+"."+key)
-    console.log(`${key}: ${lang(pageName+"."+key)}`);
+    let temp = staticTranslations[pageName];
+    langObj[key] = temp[key];
+    console.log(key, ":", pageName, ".", key);
   });
-  console.log(langObj)
+  console.log(langObj);
 
-  return langObj
+  return langObj;
 };

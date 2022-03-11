@@ -10,7 +10,8 @@ const staticTranslate = require("../services/staticTranslation");
 const imageService = require("../services/imageService");
 const studentService = require("../services/studentService");
 const authenticateService = require("../services/authenticateService");
-const { json } = require("express");
+
+const localeDAO = require('../DAO/localeDAO')
 
 //set up storage to store images
 const Storage = multer.diskStorage({
@@ -324,6 +325,7 @@ router.delete("/deleteStudent", async (req, res) => {
 router
   .route("/login")
   .get(async (req, res) => {
+
     let language = decideLanguage(req, res);
     const context = await staticTranslate.translate(language, "login");
 
